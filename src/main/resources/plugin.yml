@@ -1,0 +1,27 @@
+name: managePlayers
+description: $description
+version: '${version}'
+
+main: cd.misakplak.managePlayers
+paperPluginLoader: cd.misakplak.managePlayersLoader
+api-version: '26.1.2'
+load: POSTWORLD
+
+authors: [ misakplak ]
+
+
+commands:
+
+  manage:
+    usage: /manage {player}
+    description: a gui to manage players
+    permission: manage
+    permission-message: "§cYou cannot use this cmd"
+
+
+permissions:
+
+  manage:
+    description: a perm for manage command
+    default: op
+
