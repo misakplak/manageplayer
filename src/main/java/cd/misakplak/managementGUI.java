@@ -13,7 +13,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
+
 import java.util.List;
+import java.util.UUID;
 
 public class managementGUI implements Listener {
 
@@ -117,7 +119,8 @@ public class managementGUI implements Listener {
     }
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-
+        UUID targetUUID =  managePlayers.getInstance().getTargetPlayer().get(event.getWhoClicked().getUniqueId());
+        Player target = Bukkit.getPlayer(targetUUID);
         if(!(event.getWhoClicked() instanceof Player)) {
             return;
         }
@@ -139,9 +142,62 @@ public class managementGUI implements Listener {
         }
 
         if (clicked.getType() == Material.BARRIER) {
-
+            if (!player.hasPermission("manage.ban")) {
+                player.sendMessage("§cYou don't have permission to ban!");
+                return;
+            }
             player.openInventory(managePlayers.getInstance().getBanGUI().getInventory(player));
         }
 
+        if (clicked.getType() == Material.ENDER_EYE) {
+
+            if (!player.hasPermission("manage.tphere")) {
+                player.sendMessage("§cYou cant teleport here!");
+                return;
+            }
+
+            if (target == null) {
+                player.sendMessage("§cYou cant tp here offline players!");
+                return;
+            }
+
+            target.teleport(player.getLocation());
+            player.sendMessage("§aTeleported here!");
+        }
+
+        if (clicked.getType() == Material.ENDER_PEARL) {
+            if (!player.hasPermission("manage.tp")) {
+                player.sendMessage("§cYou cant teleport to players!");
+                return;
+            }
+
+            if (target == null) {
+                player.sendMessage("§cYou cant tp to offline players!");
+                return;
+            }
+
+            player.teleport(target.getLocation());
+            player.sendMessage("§aTeleported!");
+        }
+
+        if (clicked.getType() == Material.PLAYER_HEAD) {
+            player.sendMessage("§3You are managing " + target.getName());
+            return;
+        }
+
+        if  (clicked.getType() == Material.BRUSH) {
+            if (!player.hasPermission("manage.kick")) {
+                player.sendMessage("§cYou cant kick players!");
+                return;
+            }
+
+            if (target == null) {
+                player.sendMessage("§cYou cant kick offline players!");
+                return;
+            }
+
+            target.kick(Component.text("§3You have been kicked by §c§ka§r§8console§c§ka"));
+            player.sendMessage("§akicked!");
+        }
     }
 }

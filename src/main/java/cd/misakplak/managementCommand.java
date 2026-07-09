@@ -1,23 +1,33 @@
 package cd.misakplak;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
+
 public class managementCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+
         if (!(sender instanceof Player p)) {
             return true;
         }
+
+        Player sender1 = (Player) sender;
+        Player player = Bukkit.getPlayer(args[0]);
+        UUID targetUUID = player.getUniqueId();
+        OfflinePlayer target = Bukkit.getOfflinePlayer(targetUUID);
 
         if (args.length < 1) {
             p.sendMessage("§cUsage: /manage <player>");
             return true;
         }
 
-        Player target = Bukkit.getPlayerExact(args[0]);
+
+
         if (target == null) {
             p.sendMessage("§cPlayer not found or offline");
             return true;
@@ -25,7 +35,7 @@ public class managementCommand implements CommandExecutor {
 
         managementGUI gui = new managementGUI();
         p.openInventory(gui.getInventory(target, p));
-        managePlayers.getInstance().getTargetPlayer().put(p.getUniqueId(), target.getUniqueId());
+        managePlayers.getInstance().getTargetPlayer().put(sender1.getUniqueId(), target.getUniqueId());
         return true;
     }
 }
