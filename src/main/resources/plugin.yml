@@ -20,25 +20,38 @@ commands:
 
 
 permissions:
-
-  manage:
-    description: a perm for manage command
+  manage.*:
+    description: Gives access to all ManagePlayers permissions
     default: op
+    children:
+      manage.command: true
+      manage.tp: true
+      manage.tphere: true
+      manage.kick: true
+      manage.ban: true
+      manage.seeinv: true
 
-  manage.tphere:
-    description: "allow using teleport here in manage GUI"
-    default: op
+  manage.command:
+    description: Allows using /manage
+    default: false
 
   manage.tp:
-    description: "allow using teleport in manage GUI"
-    default: op
+    description: Allows teleporting to players
+    default: false
 
+  manage.tphere:
+    description: Allows teleporting players to you
+    default: false
 
   manage.kick:
-    description: "allow using kick in manage GUI"
-    default: op
+    description: Allows kicking players
+    default: false
 
   manage.ban:
-    default: op
-    description: "allow using ban in manage GUI"
+    description: Allows banning players
+    default: false
+
+  manage.seeinv:
+    description: Allows viewing player inventories
+    default: false
 
