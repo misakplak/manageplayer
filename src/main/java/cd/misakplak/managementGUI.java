@@ -199,5 +199,16 @@ public class managementGUI implements Listener {
             target.kick(Component.text("§3You have been kicked by §c§ka§r§8console§c§ka"));
             player.sendMessage("§akicked!");
         }
+
+        if (clicked.getType() == Material.CHEST) {
+
+            if (!player.hasPermission("manage.seeInv")) {
+                player.sendMessage("§cYou don't have permission to open this inventory!");
+                return;
+            }
+
+            invGUI invgui = new invGUI();
+            player.openInventory(invgui.getInventory(player));
+        }
     }
 }

@@ -35,6 +35,7 @@ public final class managePlayers extends JavaPlugin {
         getCommand("manage").setExecutor(new managementCommand());
         getServer().getPluginManager().registerEvents(new managementGUI(), this);
         getServer().getPluginManager().registerEvents(new banGUI(), this);
+        getServer().getPluginManager().registerEvents(new invGUI(), this);
 
     }
 

@@ -2,6 +2,7 @@ package cd.misakplak;
 
 
 import io.papermc.paper.event.player.AsyncChatEvent;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
@@ -31,12 +32,14 @@ public class banGUI implements Listener {
                 .setName((MiniMessage.miniMessage().deserialize(
                         "<i><b><gradient:#AD3434:#D73D4C><i><b>ʙᴀɴ ʀᴇᴀ</b></i></gradient><gradient:#D73D4C:#DD1818><i><b>ѕᴏɴ:</b></i></gradient></b></i>"
                 )))
+                .setLore(Collections.singletonList(Component.text(String.valueOf(playerClickedReason.get(player.getUniqueId())))))
                 .build();
 
         ItemStack duration = new MakeItem(Material.CLOCK)
                 .setName((MiniMessage.miniMessage().deserialize(
                         "<i><b><gradient:#AD3434:#D73D4C><i><b>ᴅᴜʀᴀᴛɪ</b></i></gradient><gradient:#D73D4C:#DD1818><i><b>ᴏɴ:</b></i></gradient></b></i>"
                 )))
+                .setLore(Collections.singletonList(Component.text(String.valueOf(playerClickedDuration.get(player.getUniqueId())))))
                 .build();
 
         ItemStack confirm = new MakeItem(Material.YELLOW_CONCRETE)
@@ -95,6 +98,7 @@ public class banGUI implements Listener {
 
             if (reasons.get(player.getUniqueId()) == null) {
                 player.sendMessage("§cEnter reason first");
+                return;
             }
 
             Duration duration = parseDuration(durations.get(player.getUniqueId()));
