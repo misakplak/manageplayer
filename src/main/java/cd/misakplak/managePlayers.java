@@ -34,6 +34,10 @@ public final class managePlayers extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new banGUI(), this);
         getServer().getPluginManager().registerEvents(new invGUI(), this);
 
+        //bStats
+        int pluginId = 32551;
+        Metrics metrics = new Metrics(this, pluginId);
+
     }
 
     @Override
