@@ -21,7 +21,9 @@ public class invGUI implements Listener {
 
 
     public Inventory getInventory(Player player) {
-        playersOnInv.put(player.getUniqueId(), player.getUniqueId());
+
+
+
         Bukkit.getPlayer(playersOnInv.get(player.getUniqueId())).sendMessage("invsee");
         Inventory gui = Bukkit.createInventory(player, 54, "§cInvSee");
 
@@ -103,6 +105,7 @@ public class invGUI implements Listener {
         gui.setItem(7, health);
         gui.setItem(8, gameMode);
         gui.setItem(13, target.getInventory().getItemInOffHand());
+        playersOnInv.put(player.getUniqueId(), player.getUniqueId());
 
 
         return gui;

@@ -28,18 +28,20 @@ public class banGUI implements Listener {
     public Inventory getInventory(Player player) {
         Inventory gui = Bukkit.createInventory(player, 27, "§cBAN");
 
+        String reasonStr = reasons.getOrDefault(player.getUniqueId(), "§7Not set");
         ItemStack reason = new MakeItem(Material.OAK_SIGN)
                 .setName((MiniMessage.miniMessage().deserialize(
                         "<i><b><gradient:#AD3434:#D73D4C><i><b>ʙᴀɴ ʀᴇᴀ</b></i></gradient><gradient:#D73D4C:#DD1818><i><b>ѕᴏɴ:</b></i></gradient></b></i>"
                 )))
-                .setLore(Collections.singletonList(Component.text(String.valueOf(playerClickedReason.get(player.getUniqueId())))))
+                .setLore(Collections.singletonList(Component.text(reasonStr)))
                 .build();
 
+        String durationStr = durations.getOrDefault(player.getUniqueId(), "§7Not set");
         ItemStack duration = new MakeItem(Material.CLOCK)
                 .setName((MiniMessage.miniMessage().deserialize(
                         "<i><b><gradient:#AD3434:#D73D4C><i><b>ᴅᴜʀᴀᴛɪ</b></i></gradient><gradient:#D73D4C:#DD1818><i><b>ᴏɴ:</b></i></gradient></b></i>"
                 )))
-                .setLore(Collections.singletonList(Component.text(String.valueOf(playerClickedDuration.get(player.getUniqueId())))))
+                .setLore(Collections.singletonList(Component.text(durationStr)))
                 .build();
 
         ItemStack confirm = new MakeItem(Material.YELLOW_CONCRETE)
@@ -95,21 +97,27 @@ public class banGUI implements Listener {
         }
 
         if (clicked.getType() == Material.YELLOW_CONCRETE) {
-
-            if (reasons.get(player.getUniqueId()) == null) {
+            String reasonType = reasons.get(player.getUniqueId());
+            if (reasonType == null) {
                 player.sendMessage("§cEnter reason first");
                 return;
             }
 
-            Duration duration = parseDuration(durations.get(player.getUniqueId()));
-
-            if (duration == null) {
+            String durationStr = durations.get(player.getUniqueId());
+            if (durationStr == null) {
                 player.sendMessage("§cEnter a duration");
                 return;
             }
 
-            if (reasons.get(player.getUniqueId()).equals("SPAM")) {  // Spam
+            Duration duration;
+            try {
+                duration = parseDuration(durationStr);
+            } catch (Exception e) {
+                player.sendMessage("§cInvalid duration format!");
+                return;
+            }
 
+            if (reasonType.equals("SPAM")) {  // Spam
                 target.ban(
                         "§cYou have been banned from the server.\n\n" +
                                 "§7Reason: §fSpam\n" +
@@ -117,9 +125,7 @@ public class banGUI implements Listener {
                         duration,
                         null
                 );
-                reasons.remove(player.getUniqueId(), "SPAM");
-            } else if (reasons.get(player.getUniqueId()).equals("HACKING")) { // hacks
-
+            } else if (reasonType.equals("HACKING")) { // hacks
                 target.ban(
                         "§cYou have been banned from the server.\n\n" +
                                 "§7Reason: §fUsing Hacks/Cheats\n" +
@@ -127,8 +133,7 @@ public class banGUI implements Listener {
                         duration,
                         null
                 );
-                reasons.remove(player.getUniqueId(), "HACKING");
-            } else if (reasons.get(player.getUniqueId()).equals("ESP")) { // ESP
+            } else if (reasonType.equals("ESP")) { // ESP
                 target.ban(
                         "§cYou have been banned from the server.\n\n" +
                                 "§7Reason: §fUsing ESP/X-Ray\n" +
@@ -136,22 +141,36 @@ public class banGUI implements Listener {
                         duration,
                         null
                 );
-                reasons.remove(player.getUniqueId(), "ESP");
+            } else if (reasonType.equals("PERM")) { // Perm (Example if you added more reasons)
+                target.ban(
+                        "§cYou have been banned from the server.\n\n" +
+                                "§7Reason: §fPermanent Ban\n" +
+                                "§7Contact staff for more info.",
+                        duration,
+                        null
+                );
             }
+
+            reasons.remove(player.getUniqueId());
+            durations.remove(player.getUniqueId());
+            player.sendMessage("§aPlayer banned successfully!");
+            player.closeInventory();
         }
     }
 
 
     public Duration parseDuration(String input) {
+        if (input == null) return null;
         input = input.toLowerCase();
 
-        Duration duration = Duration.ZERO;
-
-        if (input.equals("PERM")) {
+        if (input.equals("perm")) {
             return null;
         }
 
+        Duration duration = Duration.ZERO;
+
         for (String part : input.split("/")) {
+            if (part.isEmpty()) continue;
             int amount = Integer.parseInt(part.substring(0, part.length() - 1));
             char unit = part.charAt(part.length() - 1);
 
@@ -168,97 +187,71 @@ public class banGUI implements Listener {
 
     @EventHandler
     public void onChat(AsyncChatEvent event) {
-        Player player  = event.getPlayer();
+        Player player = event.getPlayer();
+        UUID uuid = player.getUniqueId();
 
-        if (playerClickedReason.containsKey(event.getPlayer().getUniqueId())) {
-
+        if (playerClickedReason.containsKey(uuid)) {
             String message = PlainTextComponentSerializer.plainText().serialize(event.message()).trim();
+            event.setCancelled(true);
 
             switch (message.toLowerCase()) {
-
                 case "cancel":
                     player.sendMessage("§aCanceling");
+                    playerClickedReason.remove(uuid);
                     Bukkit.getScheduler().runTask(managePlayers.getInstance(), () -> {
-                        event.getPlayer().openInventory(
-                                managePlayers.getInstance().getBanGUI().getInventory(event.getPlayer())
-                        );
-                        playerClickedReason.remove(event.getPlayer().getUniqueId());
+                        player.openInventory(getInventory(player));
                     });
-                    event.setCancelled(true);
                     return;
-                    case "spam":
-
-                        reasons.put(player.getUniqueId(), "SPAM");
-                        playerClickedReason.remove(player.getUniqueId(), player.getUniqueId());
-
-                        Bukkit.getScheduler().runTask(managePlayers.getInstance(), () -> {
-                            event.getPlayer().openInventory(
-                                    managePlayers.getInstance().getBanGUI().getInventory(event.getPlayer())
-                            );
-                        });
-                        event.setCancelled(true);
-                        return;
-
-                        case "hacking":
-                        reasons.put(player.getUniqueId(), "HACKING");
-                        playerClickedReason.remove(player.getUniqueId(), player.getUniqueId());
-                        Bukkit.getScheduler().runTask(managePlayers.getInstance(), () -> {
-                            event.getPlayer().openInventory(
-                                    managePlayers.getInstance().getBanGUI().getInventory(event.getPlayer())
-                            );
-                        });
-                        event.setCancelled(true);
-                        return;
-
-                        case "esp":
-                            reasons.put(player.getUniqueId(), "ESP");
-                            playerClickedReason.remove(player.getUniqueId(), player.getUniqueId());
-                            Bukkit.getScheduler().runTask(managePlayers.getInstance(), () -> {
-                                event.getPlayer().openInventory(
-                                        managePlayers.getInstance().getBanGUI().getInventory(event.getPlayer())
-
-                                );
-                            });
-                            event.setCancelled(true);
-                            return;
-
-                            case "perm:":
-                                reasons.put(player.getUniqueId(), "PERM");
-                                playerClickedReason.remove(player.getUniqueId(), player.getUniqueId());
-                                Bukkit.getScheduler().runTask(managePlayers.getInstance(), () -> {
-                                    event.getPlayer().openInventory(
-                                            managePlayers.getInstance().getBanGUI().getInventory(event.getPlayer())
-                                    );
-                                });
-                                event.setCancelled(true);
-                                return;
-
-
+                case "spam":
+                    reasons.put(uuid, "SPAM");
+                    playerClickedReason.remove(uuid);
+                    Bukkit.getScheduler().runTask(managePlayers.getInstance(), () -> {
+                        player.openInventory(getInventory(player));
+                    });
+                    return;
+                case "hacking":
+                    reasons.put(uuid, "HACKING");
+                    playerClickedReason.remove(uuid);
+                    Bukkit.getScheduler().runTask(managePlayers.getInstance(), () -> {
+                        player.openInventory(getInventory(player));
+                    });
+                    return;
+                case "esp":
+                    reasons.put(uuid, "ESP");
+                    playerClickedReason.remove(uuid);
+                    Bukkit.getScheduler().runTask(managePlayers.getInstance(), () -> {
+                        player.openInventory(getInventory(player));
+                    });
+                    return;
                 default:
                     player.sendMessage("§cInvalid Reason: §c§l" + message);
-                    event.setCancelled(true);
                     return;
+            }
+        }
 
+        if (playerClickedDuration.containsKey(uuid)) {
+            String message = PlainTextComponentSerializer.plainText().serialize(event.message()).trim();
+            event.setCancelled(true);
 
+            if (message.equalsIgnoreCase("cancel")) {
+                player.sendMessage("§aCanceling");
+                playerClickedDuration.remove(uuid);
+                Bukkit.getScheduler().runTask(managePlayers.getInstance(), () -> {
+                    player.openInventory(getInventory(player));
+                });
+                return;
             }
 
-        }
-        if (playerClickedDuration.containsKey(event.getPlayer().getUniqueId())) {
             try {
+                parseDuration(message);
 
-
-                String message = PlainTextComponentSerializer.plainText().serialize(event.message()).trim();
-
+                durations.put(uuid, message);
+                playerClickedDuration.remove(uuid);
                 Bukkit.getScheduler().runTask(managePlayers.getInstance(), () -> {
-                    event.getPlayer().openInventory(
-                            managePlayers.getInstance().getBanGUI().getInventory(event.getPlayer())
-                    );
+                    player.openInventory(getInventory(player));
                 });
-                durations.put(event.getPlayer().getUniqueId(), (message));
-                event.setCancelled(true);
-
             } catch (Exception e) {
-                event.getPlayer().sendMessage("§cInvalid duration, duration example: §81d/2h/9m");
+                player.sendMessage("§cInvalid duration format! Example: §81d/2h/9m §7or §8perm");
             }
         }
     }

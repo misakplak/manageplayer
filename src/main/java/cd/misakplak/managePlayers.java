@@ -24,9 +24,6 @@ public final class managePlayers extends JavaPlugin {
         return banGUI;
     }
 
-
-
-
     @Override
     public void onEnable() {
         // Plugin startup logic
