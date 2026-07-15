@@ -21,7 +21,7 @@ public class managementCommand implements CommandExecutor {
         UUID targetUUID = player.getUniqueId();
         OfflinePlayer target = Bukkit.getOfflinePlayer(targetUUID);
 
-        if (args.length < 1) {
+        if (args.length == 0) {
             p.sendMessage("§cUsage: /manage <player>");
             return true;
         }
