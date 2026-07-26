@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="b201bd7f-45a6-4602-ad21-9aafeb7caa01" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/manage.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/versions/1.21.11/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/versions/1.21.11/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/versions/1.21.11/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/versions/1.21.11/src/main/resources/plugin.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/versions/1.21.11/target/classes/cd/misakplak/managementCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/versions/1.21.11/target/classes/cd/misakplak/managementCommand.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/versions/1.21.11/target/classes/cd/misakplak/managementGUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/versions/1.21.11/target/classes/cd/misakplak/managementGUI.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/versions/1.21.11/target/managePlayers-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/versions/1.21.11/target/managePlayers-1.0-SNAPSHOT.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/versions/1.21.11/target/original-managePlayers-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/versions/1.21.11/target/original-managePlayers-1.0-SNAPSHOT.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/versions/26.1.2/target/classes/cd/misakplak/managementCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/versions/26.1.2/target/classes/cd/misakplak/managementCommand.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/versions/26.1.2/target/classes/cd/misakplak/managementGUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/versions/26.1.2/target/classes/cd/misakplak/managementGUI.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/versions/26.1.2/target/managePlayers-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/versions/26.1.2/target/managePlayers-1.0-SNAPSHOT.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/versions/26.1.2/target/original-managePlayers-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/versions/26.1.2/target/original-managePlayers-1.0-SNAPSHOT.jar" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="62" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/versions/1.21.11" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "misakplak"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/misakplak/manageplayer.git",
+    "accountId": "221c6e28-5013-43e7-9a2f-63dc0e2fab66"
+  }
+}]]></component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 4
+}]]></component>
+  <component name="ProjectId" id="3H2yd0nO7IJqMd7pdJRBhIz0Eg6" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "main",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/misak/Downloads/manage",
+    "to.speed.mode.migration.done": "true"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-26cb7f24e5b0-intellij.indexing.shared.core-IU-253.29346.138" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="b201bd7f-45a6-4602-ad21-9aafeb7caa01" name="Changes" comment="" />
+      <created>1785080542725</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1785080542725</updated>
+    </task>
+    <servers />
+  </component>
+</project>

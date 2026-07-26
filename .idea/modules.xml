@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/manage.iml" filepath="$PROJECT_DIR$/.idea/manage.iml" />
+      <module fileurl="file://$PROJECT_DIR$/versions/26.1.2/managePlayers.iml" filepath="$PROJECT_DIR$/versions/26.1.2/managePlayers.iml" />
+      <module fileurl="file://$PROJECT_DIR$/versions/1.21.11/managePlayers (1).iml" filepath="$PROJECT_DIR$/versions/1.21.11/managePlayers (1).iml" />
+    </modules>
+  </component>
+</project>
