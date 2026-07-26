@@ -143,7 +143,7 @@ public class invGUI implements Listener {
     @EventHandler
     public void onLeave(PlayerQuitEvent event) {
 
-        Player player = (Player) event.getPlayer();
+        Player player = event.getPlayer();
 
         if (playersOnInv.containsKey(player.getUniqueId())) {
             playersOnInv.remove(player.getUniqueId());

@@ -19,7 +19,7 @@ import java.util.UUID;
 
 public class managementGUI implements Listener {
 
-    public Inventory getInventory(OfflinePlayer player, Player sender) {
+    public Inventory getInventory(Player player, Player sender) {
 
 
         Inventory managementgui = Bukkit.createInventory(null, 54, "§8Management");  {
