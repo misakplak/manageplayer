@@ -100,6 +100,11 @@ public class FIleEventSaving implements Listener {
         String id = currentSessions.get(uuid);
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
+
+        if (id == null) {
+            return;
+        }
+
         Bukkit.getLogger().info("Saving " + uuid);
         Bukkit.getLogger().info("Session = " + id);
         Bukkit.getLogger().info("Current sessions = " + currentSessions);

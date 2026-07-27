@@ -222,7 +222,7 @@ public class managementGUI implements Listener {
         if (clicked.getType() == Material.CLOCK) {
             try {
                 LogsPlayerHistory gui = managePlayers.getInstance().getLogsPlayerHistory();
-                player.openInventory(gui.getInventory(targetUUID));
+                player.openInventory(gui.getInventory(targetUUID, 0));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
