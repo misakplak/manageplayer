@@ -5,24 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b201bd7f-45a6-4602-ad21-9aafeb7caa01" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/manage.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/versions/1.21.11/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/versions/1.21.11/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/versions/1.21.11/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/versions/1.21.11/src/main/resources/plugin.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/versions/1.21.11/target/classes/cd/misakplak/managementCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/versions/1.21.11/target/classes/cd/misakplak/managementCommand.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/versions/1.21.11/target/classes/cd/misakplak/managementGUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/versions/1.21.11/target/classes/cd/misakplak/managementGUI.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/versions/1.21.11/target/managePlayers-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/versions/1.21.11/target/managePlayers-1.0-SNAPSHOT.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/versions/1.21.11/target/original-managePlayers-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/versions/1.21.11/target/original-managePlayers-1.0-SNAPSHOT.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/versions/26.1.2/target/classes/cd/misakplak/managementCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/versions/26.1.2/target/classes/cd/misakplak/managementCommand.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/versions/26.1.2/target/classes/cd/misakplak/managementGUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/versions/26.1.2/target/classes/cd/misakplak/managementGUI.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/versions/26.1.2/target/managePlayers-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/versions/26.1.2/target/managePlayers-1.0-SNAPSHOT.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/versions/26.1.2/target/original-managePlayers-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/versions/26.1.2/target/original-managePlayers-1.0-SNAPSHOT.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,7 +13,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="50" />
+    <option name="cachedIndexableFilesCount" value="53" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -40,27 +23,27 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/versions/1.21.11" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "misakplak"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;misakplak&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/misakplak/manageplayer.git",
-    "accountId": "221c6e28-5013-43e7-9a2f-63dc0e2fab66"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/misakplak/manageplayer.git&quot;,
+    &quot;accountId&quot;: &quot;221c6e28-5013-43e7-9a2f-63dc0e2fab66&quot;
   }
-}]]></component>
+}</component>
   <component name="McpProjectServerCommands">
     <commands />
     <urls />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 4
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4
+}</component>
   <component name="ProjectId" id="3H2yd0nO7IJqMd7pdJRBhIz0Eg6" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -76,10 +59,15 @@
     "git-widget-placeholder": "main",
     "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/misak/Downloads/manage",
+    "last_opened_file_path": "C:/Users/misak/Downloads/manage/versions/1.21.11/src/main/resources",
     "to.speed.mode.migration.done": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\misak\Downloads\manage\versions\1.21.11\src\main\resources" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>

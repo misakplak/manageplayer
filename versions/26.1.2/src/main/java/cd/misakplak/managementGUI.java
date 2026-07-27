@@ -5,6 +5,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,6 +15,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
 
+import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -86,10 +89,25 @@ public class managementGUI implements Listener {
                     ))
                     .build();
 
+            ItemStack history = new MakeItem(Material.CLOCK)
+                    .setName(MiniMessage.miniMessage().deserialize(
+                            "<i><b><gradient:#FD8B46:#53772D>ʜɪѕᴛᴏʀ</gradient><gradient:#53772D:#A469A2>ʏ</gradient></b></i>"
+                    ))
+                    .setLore(List.of(
+                            MiniMessage.miniMessage().deserialize(
+                                    "<i><b><gradient:#FD8B46:#53772D>ᴠɪᴇᴡ ᴘʟᴀʏᴇʀѕ ʜɪѕᴛ</gradient><gradient:#53772D:#A469A2>ᴏʀʏ</gradient></b></i>"
+                            )
+                    ))
+                    .build();
+
+
 
 
             ItemStack head = new ItemStack(Material.PLAYER_HEAD);
+            UUID targetUUID = managePlayers.getInstance().getTargetPlayer().get(sender.getUniqueId());
+            head.setLore(Collections.singletonList("§7 UUID: §a§l" + targetUUID));
             SkullMeta headMeta = (SkullMeta) head.getItemMeta();
+            headMeta.setEnchantmentGlintOverride(true);
             headMeta.setOwningPlayer(player);
             head.setItemMeta(headMeta);
 
@@ -112,13 +130,14 @@ public class managementGUI implements Listener {
             managementgui.setItem(38, tpTo);
             managementgui.setItem(40, head);
             managementgui.setItem(42, tpHere);
+            managementgui.setItem(49, history);
 
         }
 
         return managementgui;
     }
     @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) {
+    public void onInventoryClick(InventoryClickEvent event) throws InvalidConfigurationException {
         UUID targetUUID =  managePlayers.getInstance().getTargetPlayer().get(event.getWhoClicked().getUniqueId());
         Player target = Bukkit.getPlayer(targetUUID);
         if(!(event.getWhoClicked() instanceof Player)) {
@@ -198,6 +217,15 @@ public class managementGUI implements Listener {
 
             target.kick(Component.text("§3You have been kicked by §c§ka§r§8console§c§ka"));
             player.sendMessage("§akicked!");
+        }
+
+        if (clicked.getType() == Material.CLOCK) {
+            try {
+                LogsPlayerHistory gui = managePlayers.getInstance().getLogsPlayerHistory();
+                player.openInventory(gui.getInventory(targetUUID, 0));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         if (clicked.getType() == Material.CHEST) {
