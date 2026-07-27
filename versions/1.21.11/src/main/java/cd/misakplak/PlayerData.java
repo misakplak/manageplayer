@@ -54,12 +54,13 @@ public class PlayerData {
         return yaml.getBoolean(path);
     }
 
-    public ItemStack[] getInventory(String path) {
+    public ItemStack[] getInventory(String path) throws IOException, InvalidConfigurationException {
         List<?> list = yaml.getList(path);
 
         if (list == null) {
             return new ItemStack[41];
         }
+
 
         return list.toArray(new ItemStack[0]);
     }
@@ -83,6 +84,11 @@ public class PlayerData {
 
     public void save() throws IOException {
         yaml.save(file);
+        try {
+            reload();
+        } catch (InvalidConfigurationException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void reload() throws IOException, InvalidConfigurationException {

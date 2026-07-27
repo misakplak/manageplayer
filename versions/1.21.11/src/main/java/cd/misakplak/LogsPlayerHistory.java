@@ -13,7 +13,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,11 +22,7 @@ public class LogsPlayerHistory implements Listener {
 
 
 
-    private PlayerData data;
-
-    public LogsPlayerHistory(JavaPlugin plugin) throws IOException {
-        this.data = new PlayerData(plugin);
-    }
+    private PlayerData data = managePlayers.getInstance().getPlayerData();
 
 
 
@@ -46,31 +41,27 @@ public class LogsPlayerHistory implements Listener {
             return inventory;
         }
 
-        ItemStack chat = new MakeItem(Material.PAPER)
-                .setName("§6 all messages from this player during this session")
-                .build();
-
-        ItemStack commands = new MakeItem(Material.DARK_OAK_SIGN)
-                .setName("§6 all commands from this player during this session")
-                .build();
-
         for (String logId : logs.getKeys(false)) {
             String base = target + ".logs." + logId;
 
-            String leaveTime = data.getString(base + ".leavetime");
+
+
+            if (data.getGameMode(base + ".gamemode") == null) {
+                continue;
+            }
 
             NamespacedKey key = new NamespacedKey(managePlayers.getInstance(), "log-id");
 
-            ItemStack chest = new MakeItem(Material.BOOK)
-                    .setName("§6Session Information")
-                    .setLoreLegacy(List.of(
-                            "§7Joined: " + data.getString(base + ".jointime"),
-                            "§7Left: " + data.getString(base + ".leavetime"),
-                            "§7Gamemode: " + data.getGameMode(base + ".gamemode"),
-                            "§7Health: " + data.getConfig().getDouble(base + ".health"),
-                            "§7Location: " + data.getString(base + ".location")
-                    ))
-                    .build();
+                ItemStack chest = new MakeItem(Material.BOOK)
+                        .setName("§6Session Information")
+                        .setLoreLegacy(List.of(
+                                "§7Joined: " + data.getString(base + ".jointime"),
+                                "§7Gamemode: " + data.getGameMode(base + ".gamemode"),
+                                "§7Health: " + data.getConfig().getDouble(base + ".health"),
+                                "§7Location: " + data.getString(base + ".location")
+                        ))
+                        .build();
+
 
             ItemMeta meta = chest.getItemMeta();
 
@@ -81,6 +72,7 @@ public class LogsPlayerHistory implements Listener {
 
 
         }
+
 
         return inventory;
     }
@@ -142,6 +134,8 @@ public class LogsPlayerHistory implements Listener {
 
             inventory.addItem(item);
         }
+
+
         return inventory;
     }
 
@@ -162,6 +156,8 @@ public class LogsPlayerHistory implements Listener {
 
             inventory.addItem(item);
         }
+
+
         return inventory;
     }
 

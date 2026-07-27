@@ -1,6 +1,7 @@
 package cd.misakplak;
 
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -12,27 +13,34 @@ import java.util.*;
 public final class managePlayers extends JavaPlugin {
 
     private static managePlayers instance;
+    private PlayerData playerData;
+    private FIleEventSaving fileEventSaving;
+    private LogsPlayerHistory logsPlayerHistory;
 
 
     @Override
     public void onEnable() {
         instance = this;
 
+
+        try {
+            playerData = new PlayerData(this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
         getLogger().info("management ready :)");
 
-        try {
-            fileEventSaving = new FIleEventSaving(this);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+
+            fileEventSaving = new FIleEventSaving();
+            logsPlayerHistory = new LogsPlayerHistory();
+
 
         getServer().getPluginManager().registerEvents(fileEventSaving, this);
+        saveDefaultConfig();
 
-        try {
-            getServer().getPluginManager().registerEvents(new LogsPlayerHistory(this), this);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        getServer().getPluginManager().registerEvents(logsPlayerHistory, this);
 
         getCommand("manage").setExecutor(new managementCommand());
         getServer().getPluginManager().registerEvents(new managementGUI(), this);
@@ -47,7 +55,11 @@ public final class managePlayers extends JavaPlugin {
         // Plugin shutdown logic
         for (Player player : Bukkit.getOnlinePlayers()) {
             try {
-                fileEventSaving.saveSnapshot(player.getUniqueId(), player);
+                try {
+                    fileEventSaving.saveSnapshot(player.getUniqueId(), player);
+                } catch (InvalidConfigurationException e) {
+                    throw new RuntimeException(e);
+                }
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -81,8 +93,17 @@ public final class managePlayers extends JavaPlugin {
         return currentSessions;
     }
 
-    private FIleEventSaving fileEventSaving;
+    public PlayerData getPlayerData() {
+        return playerData;
+    }
 
+    public LogsPlayerHistory getLogsPlayerHistory() {
+        return logsPlayerHistory;
+    }
 
+    private final Map<UUID, Integer> historyPage = new HashMap<>();
 
+    public Map<UUID, Integer> getHistoryPage() {
+        return historyPage;
+    }
 }

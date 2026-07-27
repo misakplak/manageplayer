@@ -1,11 +1,11 @@
 package cd.misakplak;
 
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.*;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -15,18 +15,15 @@ import java.util.Map;
 import java.util.UUID;
 
 public class FIleEventSaving implements Listener {
-    private final PlayerData data;
+    private final PlayerData data = managePlayers.getInstance().getPlayerData();
 
     private final Map<UUID, String> currentSessions = managePlayers.getInstance().getCurrentSessions();
 
-    public FIleEventSaving(JavaPlugin plugin) throws IOException {
-        this.data = new PlayerData(plugin);
-    }
 
 
 
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) throws IOException {
+    public void onPlayerJoin(PlayerJoinEvent event) throws IOException{
 
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         String sessionId = String.valueOf(System.currentTimeMillis());
@@ -35,15 +32,16 @@ public class FIleEventSaving implements Listener {
 
         data.set(event.getPlayer().getUniqueId() + ".logs." + sessionId + ".jointime", timestamp.toString());
         data.save();
-
     }
 
     @EventHandler
-    public void onPlayerLeave(PlayerQuitEvent event) throws IOException {
+    public void onPlayerLeave(PlayerQuitEvent event) throws IOException, InvalidConfigurationException {
         UUID uuid = event.getPlayer().getUniqueId();
         Player player = event.getPlayer();
 
         saveSnapshot(uuid, player);
+
+
     }
 
     @EventHandler
@@ -97,11 +95,14 @@ public class FIleEventSaving implements Listener {
 
     }
 
-    public void saveSnapshot(UUID uuid, Player player) throws IOException {
+    public void saveSnapshot(UUID uuid, Player player) throws IOException, InvalidConfigurationException {
 
         String id = currentSessions.get(uuid);
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
+        Bukkit.getLogger().info("Saving " + uuid);
+        Bukkit.getLogger().info("Session = " + id);
+        Bukkit.getLogger().info("Current sessions = " + currentSessions);
 
 
         data.set(uuid + ".logs." + id + ".inventory", player.getInventory().getContents());

@@ -16,6 +16,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -103,7 +104,10 @@ public class managementGUI implements Listener {
 
 
             ItemStack head = new ItemStack(Material.PLAYER_HEAD);
+            UUID targetUUID = managePlayers.getInstance().getTargetPlayer().get(sender.getUniqueId());
+            head.setLore(Collections.singletonList("§7 UUID: §a§l" + targetUUID));
             SkullMeta headMeta = (SkullMeta) head.getItemMeta();
+            headMeta.setEnchantmentGlintOverride(true);
             headMeta.setOwningPlayer(player);
             head.setItemMeta(headMeta);
 
@@ -217,7 +221,7 @@ public class managementGUI implements Listener {
 
         if (clicked.getType() == Material.CLOCK) {
             try {
-                LogsPlayerHistory gui = new LogsPlayerHistory(managePlayers.getInstance());
+                LogsPlayerHistory gui = managePlayers.getInstance().getLogsPlayerHistory();
                 player.openInventory(gui.getInventory(targetUUID));
             } catch (IOException e) {
                 throw new RuntimeException(e);
