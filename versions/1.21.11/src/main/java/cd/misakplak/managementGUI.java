@@ -5,6 +5,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -132,7 +133,7 @@ public class managementGUI implements Listener {
         return managementgui;
     }
     @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) {
+    public void onInventoryClick(InventoryClickEvent event) throws InvalidConfigurationException {
         UUID targetUUID =  managePlayers.getInstance().getTargetPlayer().get(event.getWhoClicked().getUniqueId());
         Player target = Bukkit.getPlayer(targetUUID);
         if(!(event.getWhoClicked() instanceof Player)) {
@@ -216,7 +217,7 @@ public class managementGUI implements Listener {
 
         if (clicked.getType() == Material.CLOCK) {
             try {
-                LogsPlayerHistory gui = new LogsPlayerHistory();
+                LogsPlayerHistory gui = new LogsPlayerHistory(managePlayers.getInstance());
                 player.openInventory(gui.getInventory(targetUUID));
             } catch (IOException e) {
                 throw new RuntimeException(e);

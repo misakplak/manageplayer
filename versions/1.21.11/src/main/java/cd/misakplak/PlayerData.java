@@ -33,11 +33,13 @@ public class PlayerData {
 
     public void set(String path, Object value) throws IOException {
         yaml.set(path, value);
-        save();
     }
 
     public String getString(String path) {
         return yaml.getString(path);
+    }
+    public List<String> getStringList(String path) {
+        return yaml.getStringList(path);
     }
 
     public int getInt(String path) {

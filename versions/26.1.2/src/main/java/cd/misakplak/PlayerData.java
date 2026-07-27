@@ -39,6 +39,9 @@ public class PlayerData {
     public String getString(String path) {
         return yaml.getString(path);
     }
+    public List<String> getStringList(String path) {
+        return yaml.getStringList(path);
+    }
 
     public int getInt(String path) {
         return yaml.getInt(path);
