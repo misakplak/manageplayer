@@ -41,6 +41,11 @@ public final class managePlayers extends JavaPlugin {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        try {
+            getServer().getPluginManager().registerEvents(new LogsPlayerHistory(), this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         //bStats
         int pluginId = 32551;

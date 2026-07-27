@@ -125,7 +125,7 @@ public class managementGUI implements Listener {
             managementgui.setItem(38, tpTo);
             managementgui.setItem(40, head);
             managementgui.setItem(42, tpHere);
-            managementgui.setItem(43, history);
+            managementgui.setItem(49, history);
 
         }
 

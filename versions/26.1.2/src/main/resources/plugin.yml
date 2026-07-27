@@ -30,6 +30,7 @@ permissions:
       manage.kick: true
       manage.ban: true
       manage.seeinv: true
+      manage.seeHistory: true
 
   manage.command:
     description: Allows using /manage
@@ -53,5 +54,9 @@ permissions:
 
   manage.seeinv:
     description: Allows viewing player inventories
+    default: false
+
+  manage.seeHistory:
+    description: Allows viewing players history when they left and useful info
     default: false
 

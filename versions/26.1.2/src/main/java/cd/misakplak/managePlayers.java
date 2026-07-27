@@ -2,6 +2,7 @@ package cd.misakplak;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.IOException;
 import java.util.*;
 
 public final class managePlayers extends JavaPlugin {
@@ -33,6 +34,17 @@ public final class managePlayers extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new managementGUI(), this);
         getServer().getPluginManager().registerEvents(new banGUI(), this);
         getServer().getPluginManager().registerEvents(new invGUI(), this);
+
+        try {
+            getServer().getPluginManager().registerEvents(new FIleEventSaving(this), this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            getServer().getPluginManager().registerEvents(new LogsPlayerHistory(), this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         //bStats
         int pluginId = 32551;
