@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -86,6 +87,18 @@ public class managementGUI implements Listener {
                     ))
                     .build();
 
+            ItemStack history = new MakeItem(Material.CLOCK)
+                    .setName(MiniMessage.miniMessage().deserialize(
+                            "<i><b><gradient:#FD8B46:#53772D>ʜɪѕᴛᴏʀ</gradient><gradient:#53772D:#A469A2>ʏ</gradient></b></i>"
+                    ))
+                    .setLore(List.of(
+                            MiniMessage.miniMessage().deserialize(
+                                    "<i><b><gradient:#FD8B46:#53772D>ᴠɪᴇᴡ ᴘʟᴀʏᴇʀѕ ʜɪѕᴛ</gradient><gradient:#53772D:#A469A2>ᴏʀʏ</gradient></b></i>"
+                            )
+                    ))
+                    .build();
+
+
 
 
             ItemStack head = new ItemStack(Material.PLAYER_HEAD);
@@ -112,6 +125,7 @@ public class managementGUI implements Listener {
             managementgui.setItem(38, tpTo);
             managementgui.setItem(40, head);
             managementgui.setItem(42, tpHere);
+            managementgui.setItem(43, history);
 
         }
 
@@ -198,6 +212,15 @@ public class managementGUI implements Listener {
 
             target.kick(Component.text("§3You have been kicked by §c§ka§r§8console§c§ka"));
             player.sendMessage("§akicked!");
+        }
+
+        if (clicked.getType() == Material.CLOCK) {
+            try {
+                LogsPlayerHistory gui = new LogsPlayerHistory();
+                player.openInventory(gui.getInventory(targetUUID));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         if (clicked.getType() == Material.CHEST) {

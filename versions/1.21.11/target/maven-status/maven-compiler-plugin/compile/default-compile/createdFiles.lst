@@ -8,7 +8,10 @@ cd\misakplak\managePlayers.class
 cd\misakplak\Metrics$AdvancedBarChart.class
 cd\misakplak\Metrics$SingleLineChart.class
 cd\misakplak\Metrics$MetricsBase.class
+cd\misakplak\LogsPlayerHistory.class
 cd\misakplak\Metrics$AdvancedPie.class
+cd\misakplak\FIleEventSaving.class
+cd\misakplak\PlayerData.class
 cd\misakplak\Metrics$SimpleBarChart.class
 cd\misakplak\Metrics$SimplePie.class
 cd\misakplak\invGUI.class
