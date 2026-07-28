@@ -33,8 +33,8 @@ public final class managePlayers extends JavaPlugin {
         getLogger().info("management ready :)");
 
 
-            fileEventSaving = new FIleEventSaving();
-            logsPlayerHistory = new LogsPlayerHistory();
+        fileEventSaving = new FIleEventSaving();
+        logsPlayerHistory = new LogsPlayerHistory();
 
 
         getServer().getPluginManager().registerEvents(fileEventSaving, this);
@@ -101,9 +101,25 @@ public final class managePlayers extends JavaPlugin {
         return logsPlayerHistory;
     }
 
+    /*
+     *history page storing...
+     * hashmaps and getters
+     * for them
+     */
+
     private final Map<UUID, Integer> historyPage = new HashMap<>();
+    private final Map<UUID, Integer> chatPage = new HashMap<>();
+    private final Map<UUID, Integer> commandsPage = new HashMap<>();
 
     public Map<UUID, Integer> getHistoryPage() {
         return historyPage;
+    }
+
+    public Map<UUID, Integer> getCommandsPage() {
+        return commandsPage;
+    }
+
+    public Map<UUID, Integer> getChatPage() {
+        return chatPage;
     }
 }

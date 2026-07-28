@@ -28,6 +28,7 @@ public class LogsPlayerHistory implements Listener {
 
 
 
+
     public Inventory getInventory(UUID target, int page) throws IOException, InvalidConfigurationException {
         data.reload();
 
@@ -42,7 +43,7 @@ public class LogsPlayerHistory implements Listener {
         List<String> logIds = new ArrayList<>();
 
         for (String logId : logs.getKeys(false)) {
-            String base = target + ".logs." + logId;
+            String base = target + ".logs."  + logId;
 
             if (data.getGameMode(base + ".gamemode") == null) {
                 continue;
@@ -58,7 +59,7 @@ public class LogsPlayerHistory implements Listener {
         if (totalPages == 0) totalPages = 1;
 
         if (page < 0) page = 0;
-        if (page > totalPages - 1) page = totalPages - 1;
+        if (page > totalPages - 1) page = totalPages  - 1;
 
         int start = page * PAGE_SIZE;
         int end = Math.min(start + PAGE_SIZE, logIds.size());
@@ -89,6 +90,8 @@ public class LogsPlayerHistory implements Listener {
             inventory.setItem(slot, chest);
 
             slot++;
+
+
         }
 
         NamespacedKey navKey = new NamespacedKey(managePlayers.getInstance(), "history-nav");
@@ -143,6 +146,7 @@ public class LogsPlayerHistory implements Listener {
         chatMeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, logId);
         chat.setItemMeta(chatMeta);
 
+
         ItemMeta commandMeta = commands.getItemMeta();
         commandMeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, logId);
         commands.setItemMeta(commandMeta);
@@ -165,7 +169,7 @@ public class LogsPlayerHistory implements Listener {
         return inv;
     }
 
-    public Inventory getChatGui(UUID target, String logId) throws IOException, InvalidConfigurationException {
+    public Inventory getChatGui(UUID target, String logId, int page) throws IOException, InvalidConfigurationException {
         data.reload();
         Inventory inventory = Bukkit.createInventory(null, 54, "Chat");
 
@@ -173,38 +177,158 @@ public class LogsPlayerHistory implements Listener {
         List<String> messages =
                 data.getStringList(target + ".logs." + logId + ".chat");
 
+        ConfigurationSection logs = data.getSection(target + ".logs");
 
-        for (String message : messages) {
+        if (logs == null) {
+            return inventory;
+        }
+
+        int PAGE_SIZE = 45;
+        int totalPages = (int) Math.ceil(messages.size() / (double) PAGE_SIZE);
+        if (totalPages == 0) totalPages = 1;
+
+        if (page < 0) page = 0;
+        if (page > totalPages - 1) page = totalPages - 1;
+
+        int start = page * PAGE_SIZE;
+        int end = Math.min(start + PAGE_SIZE, messages.size());
+
+        List<String> pageMessages = start < end ? messages.subList(start, end) : new ArrayList<>();
+
+
+
+        int slot = 0;
+        for (String message : pageMessages) {
 
             ItemStack item = new MakeItem(Material.PAPER)
                     .setName("§fMessage")
                     .setLoreLegacy(List.of(message))
                     .build();
 
-            inventory.addItem(item);
+            inventory.setItem(slot, item);
+            slot++;
         }
+
+        NamespacedKey navKey = new NamespacedKey(managePlayers.getInstance(), "history-nav");
+        NamespacedKey navTypeKey = new NamespacedKey(managePlayers.getInstance(), "history-nav-type");
+        NamespacedKey navLogKey = new NamespacedKey(managePlayers.getInstance(), "history-nav-logid");
+
+        if (page > 0) {
+            ItemStack prev = new MakeItem(Material.ARROW)
+                    .setName("§ePrevious Page")
+                    .build();
+
+            ItemMeta prevMeta = prev.getItemMeta();
+            prevMeta.getPersistentDataContainer().set(navKey, PersistentDataType.STRING, "prev");
+            prevMeta.getPersistentDataContainer().set(navTypeKey, PersistentDataType.STRING, "chat");
+            prevMeta.getPersistentDataContainer().set(navLogKey, PersistentDataType.STRING, logId);
+            prev.setItemMeta(prevMeta);
+
+            inventory.setItem(45, prev);
+        }
+
+        if (page < totalPages - 1) {
+            ItemStack next = new MakeItem(Material.ARROW)
+                    .setName("§eNext Page")
+                    .build();
+
+            ItemMeta nextMeta = next.getItemMeta();
+            nextMeta.getPersistentDataContainer().set(navKey, PersistentDataType.STRING, "next");
+            nextMeta.getPersistentDataContainer().set(navTypeKey, PersistentDataType.STRING, "chat");
+            nextMeta.getPersistentDataContainer().set(navLogKey, PersistentDataType.STRING, logId);
+            next.setItemMeta(nextMeta);
+
+            inventory.setItem(53, next);
+        }
+
+        ItemStack pageInfo = new MakeItem(Material.PAPER)
+                .setName("§7Page " + (page + 1) + " / " + totalPages)
+                .build();
+
+        inventory.setItem(49, pageInfo);
 
 
         return inventory;
     }
 
-    public Inventory getComandGui(UUID target,  String logId) throws IOException, InvalidConfigurationException {
+    public Inventory getComandGui(UUID target,  String logId, int page) throws IOException, InvalidConfigurationException {
         Inventory inventory = Bukkit.createInventory(null, 54, "Commands");
         data.reload();
 
 
         List<String> commands = data.getStringList(target + ".logs." + logId +".commands");
 
+        ConfigurationSection logs = data.getSection(target + ".logs");
 
-        for (String message : commands) {
+        if (logs == null) {
+            return inventory;
+        }
+
+        int PAGE_SIZE = 45;
+        int totalPages = (int) Math.ceil(commands.size() / (double) PAGE_SIZE);
+        if (totalPages == 0) totalPages = 1;
+
+        if (page < 0) page = 0;
+        if (page > totalPages - 1) page = totalPages - 1;
+
+        int start = page * PAGE_SIZE;
+        int end = Math.min(start + PAGE_SIZE, commands.size());
+
+        List<String> pageMessages = start < end ? commands.subList(start, end) : new ArrayList<>();
+
+
+
+        int slot = 0;
+
+
+        for (String message : pageMessages) {
 
             ItemStack item = new MakeItem(Material.DARK_OAK_SIGN)
                     .setName("§fcommand")
                     .setLoreLegacy(List.of(message))
                     .build();
 
-            inventory.addItem(item);
+            inventory.setItem(slot, item);
+            slot++;
         }
+
+        NamespacedKey navKey = new NamespacedKey(managePlayers.getInstance(), "history-nav");
+        NamespacedKey navTypeKey = new NamespacedKey(managePlayers.getInstance(), "history-nav-type");
+        NamespacedKey navLogKey = new NamespacedKey(managePlayers.getInstance(), "history-nav-logid");
+
+        if (page > 0) {
+            ItemStack prev = new MakeItem(Material.ARROW)
+                    .setName("§ePrevious Page")
+                    .build();
+
+            ItemMeta prevMeta = prev.getItemMeta();
+            prevMeta.getPersistentDataContainer().set(navKey, PersistentDataType.STRING, "prev");
+            prevMeta.getPersistentDataContainer().set(navTypeKey, PersistentDataType.STRING, "commands");
+            prevMeta.getPersistentDataContainer().set(navLogKey, PersistentDataType.STRING, logId);
+            prev.setItemMeta(prevMeta);
+
+            inventory.setItem(45, prev);
+        }
+
+        if (page < totalPages - 1) {
+            ItemStack next = new MakeItem(Material.ARROW)
+                    .setName("§eNext Page")
+                    .build();
+
+            ItemMeta nextMeta = next.getItemMeta();
+            nextMeta.getPersistentDataContainer().set(navKey, PersistentDataType.STRING, "next");
+            nextMeta.getPersistentDataContainer().set(navTypeKey, PersistentDataType.STRING, "commands");
+            nextMeta.getPersistentDataContainer().set(navLogKey, PersistentDataType.STRING, logId);
+            next.setItemMeta(nextMeta);
+
+            inventory.setItem(53, next);
+        }
+
+        ItemStack pageInfo = new MakeItem(Material.PAPER)
+                .setName("§7Page " + (page + 1) + " / " + totalPages)
+                .build();
+
+        inventory.setItem(49, pageInfo);
 
 
         return inventory;
@@ -221,10 +345,6 @@ public class LogsPlayerHistory implements Listener {
             return;
         }
 
-        if (clicked == null || clicked.getType() == Material.AIR || !clicked.hasItemMeta()) {
-            return;
-        }
-
         String title = event.getView().getTitle();
 
         if (!title.equals("Players history")
@@ -233,21 +353,46 @@ public class LogsPlayerHistory implements Listener {
                 && !title.equals("Commands")) {
             return;
         }
+        event.setCancelled(true);
+
+        if (clicked == null || clicked.getType() == Material.AIR || !clicked.hasItemMeta()) {
+            return;
+        }
 
         NamespacedKey navKey = new NamespacedKey(managePlayers.getInstance(), "history-nav");
         String navAction = clicked.getItemMeta().getPersistentDataContainer().get(navKey, PersistentDataType.STRING);
 
         if (navAction != null) {
-            event.setCancelled(true);
+            NamespacedKey navTypeKey = new NamespacedKey(managePlayers.getInstance(), "history-nav-type");
+            NamespacedKey navLogIdKey = new NamespacedKey(managePlayers.getInstance(), "history-nav-logid");
+
+            String navType = clicked.getItemMeta().getPersistentDataContainer().get(navTypeKey, PersistentDataType.STRING);
+            String navLogId = clicked.getItemMeta().getPersistentDataContainer().get(navLogIdKey, PersistentDataType.STRING);
 
             UUID viewer = event.getWhoClicked().getUniqueId();
-            int currentPage = managePlayers.getInstance().getHistoryPage().getOrDefault(viewer, 0);
 
-            int newPage = navAction.equals("next") ? currentPage + 1 : currentPage - 1;
+            if (navType == null) {
+                int currentPage = managePlayers.getInstance().getHistoryPage().getOrDefault(viewer, 0);
+                int newPage = navAction.equals("next") ? currentPage + 1 : currentPage - 1;
 
-            managePlayers.getInstance().getHistoryPage().put(viewer, newPage);
+                managePlayers.getInstance().getHistoryPage().put(viewer, newPage);
+                event.getWhoClicked().openInventory(getInventory(targetUUID, newPage));
 
-            event.getWhoClicked().openInventory(getInventory(targetUUID, newPage));
+            } else if (navType.equals("chat")) {
+                int currentPage = managePlayers.getInstance().getChatPage().getOrDefault(viewer, 0);
+                int newPage = navAction.equals("next") ? currentPage + 1 : currentPage - 1;
+
+                managePlayers.getInstance().getChatPage().put(viewer, newPage);
+                event.getWhoClicked().openInventory(getChatGui(targetUUID, navLogId, newPage));
+
+            } else if (navType.equals("commands")) {
+                int currentPage = managePlayers.getInstance().getCommandsPage().getOrDefault(viewer, 0);
+                int newPage = navAction.equals("next") ? currentPage + 1 : currentPage - 1;
+
+                managePlayers.getInstance().getCommandsPage().put(viewer, newPage);
+                event.getWhoClicked().openInventory(getComandGui(targetUUID, navLogId, newPage));
+            }
+
             return;
         }
 
@@ -268,11 +413,11 @@ public class LogsPlayerHistory implements Listener {
             }
             case DARK_OAK_SIGN -> {
                 event.setCancelled(true);
-                event.getWhoClicked().openInventory(getComandGui(targetUUID, logId));
+                event.getWhoClicked().openInventory(getComandGui(targetUUID, logId, 0));
             }
             case PAPER -> {
                 event.setCancelled(true);
-                event.getWhoClicked().openInventory(getChatGui(targetUUID, logId));
+                event.getWhoClicked().openInventory(getChatGui(targetUUID, logId, 0));
             }
         }
     }
