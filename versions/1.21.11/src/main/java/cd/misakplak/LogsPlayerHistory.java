@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,9 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class LogsPlayerHistory implements Listener {
 
@@ -30,11 +29,20 @@ public class LogsPlayerHistory implements Listener {
 
 
     public Inventory getInventory(UUID target, int page) throws IOException, InvalidConfigurationException {
-        data.reload();
+        data.reload(target);
 
         Inventory inventory = Bukkit.createInventory(null, 54, "Players history");
 
-        ConfigurationSection logs = data.getSection(target + ".logs");
+        ItemStack noLog = new MakeItem(Material.BARRIER)
+                .setName("§c§lLogging disabled in §aconfig.yml§c!")
+                .build();
+
+        if (!managePlayers.getInstance().getConfig().getBoolean("history.log-history")) {
+            inventory.setItem(0, noLog);
+            return inventory;
+        }
+
+        ConfigurationSection logs = data.getSection(target,"logs");
 
         if (logs == null) {
             return inventory;
@@ -43,9 +51,9 @@ public class LogsPlayerHistory implements Listener {
         List<String> logIds = new ArrayList<>();
 
         for (String logId : logs.getKeys(false)) {
-            String base = target + ".logs."  + logId;
+            String base = "logs."  + logId;
 
-            if (data.getGameMode(base + ".gamemode") == null) {
+            if (data.getGameMode(target, base + ".gamemode") == null) {
                 continue;
             }
 
@@ -70,15 +78,15 @@ public class LogsPlayerHistory implements Listener {
 
         int slot = 0;
         for (String logId : pageIds) {
-            String base = target + ".logs." + logId;
+            String base = "logs." + logId;
 
             ItemStack chest = new MakeItem(Material.BOOK)
                     .setName("§6Session Information")
                     .setLoreLegacy(List.of(
-                            "§7Joined: " + data.getString(base + ".jointime"),
-                            "§7Gamemode: " + data.getGameMode(base + ".gamemode"),
-                            "§7Health: " + data.getConfig().getDouble(base + ".health"),
-                            "§7Location: " + data.getString(base + ".location")
+                            "§7Joined: " + data.getString(target, base + ".jointime"),
+                            "§7Gamemode: " + data.getGameMode(target,base + ".gamemode"),
+                            "§7Health: " + data.getConfig(target).getDouble(base + ".health"),
+                            "§7Location: " + data.getString(target, base + ".location")
                     ))
                     .build();
 
@@ -130,7 +138,7 @@ public class LogsPlayerHistory implements Listener {
     }
 
     public Inventory getInventory(UUID target, String logId) throws IOException, InvalidConfigurationException {
-        data.reload();
+        data.reload(target);
 
         ItemStack chat = new MakeItem(Material.PAPER)
                 .setName("§eChat")
@@ -153,16 +161,16 @@ public class LogsPlayerHistory implements Listener {
 
         Inventory inv = Bukkit.createInventory(null, 54, "Snapshot");
 
-        String base = target + ".logs." + logId;
+        String base =  "logs." + logId;
 
-        inv.setContents(data.getInventory(base + ".inventory"));
+        inv.setContents(data.getInventory(target, base + ".inventory"));
 
-        inv.setItem(36, data.getItem(base + ".helmet"));
-        inv.setItem(37, data.getItem(base + ".chestplate"));
-        inv.setItem(38, data.getItem(base + ".leggings"));
-        inv.setItem(39, data.getItem(base + ".boots"));
-        inv.setItem(40, data.getItem(base + ".offhand"));
 
+        inv.setItem(36, data.getItem(target, base + ".helmet"));
+        inv.setItem(37, data.getItem(target, base + ".chestplate"));
+        inv.setItem(38, data.getItem(target, base + ".leggings"));
+        inv.setItem(39, data.getItem(target, base + ".boots"));
+        inv.setItem(40, data.getItem(target, base + ".offhand"));
         inv.setItem(48, chat);
         inv.setItem(49, commands);
 
@@ -170,14 +178,14 @@ public class LogsPlayerHistory implements Listener {
     }
 
     public Inventory getChatGui(UUID target, String logId, int page) throws IOException, InvalidConfigurationException {
-        data.reload();
+        data.reload(target);
         Inventory inventory = Bukkit.createInventory(null, 54, "Chat");
 
 
         List<String> messages =
-                data.getStringList(target + ".logs." + logId + ".chat");
+                data.getStringList(target, "logs." + logId + ".chat");
 
-        ConfigurationSection logs = data.getSection(target + ".logs");
+        ConfigurationSection logs = data.getSection(target, "logs");
 
         if (logs == null) {
             return inventory;
@@ -253,12 +261,12 @@ public class LogsPlayerHistory implements Listener {
 
     public Inventory getComandGui(UUID target,  String logId, int page) throws IOException, InvalidConfigurationException {
         Inventory inventory = Bukkit.createInventory(null, 54, "Commands");
-        data.reload();
+        data.reload(target);
 
 
-        List<String> commands = data.getStringList(target + ".logs." + logId +".commands");
+        List<String> commands = data.getStringList(target, "logs." + logId + ".commands");
 
-        ConfigurationSection logs = data.getSection(target + ".logs");
+        ConfigurationSection logs = data.getSection(target, "logs");
 
         if (logs == null) {
             return inventory;

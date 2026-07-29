@@ -9,53 +9,72 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
+import java.util.*;
 
 public class PlayerData {
 
-    private final File file;
-    private final YamlConfiguration yaml;
+    private final File folder;
+    private final Map<UUID, YamlConfiguration> configs = new HashMap<>();
+
+
 
     public PlayerData(JavaPlugin plugin) throws IOException {
+        folder = new File(plugin.getDataFolder(), "PlayerData");
 
-        if (!plugin.getDataFolder().exists()) {
-            plugin.getDataFolder().mkdirs();
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+    }
+
+    private File getFile(UUID uuid) {
+        return new File(folder, uuid + ".yaml");
+    }
+
+    public YamlConfiguration getConfig(UUID uuid) throws IOException {
+        if (configs.containsKey(uuid)) {
+            return configs.get(uuid);
         }
 
-        file = new File(plugin.getDataFolder(), "PlayerData.yml");
+        File file = getFile(uuid);
 
         if (!file.exists()) {
             file.createNewFile();
         }
 
-        yaml = YamlConfiguration.loadConfiguration(file);
+        YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
+        configs.put(uuid, yaml);
+
+        return yaml;
     }
 
-    public void set(String path, Object value) throws IOException {
+    public void set(UUID uuid, String path, Object value) throws IOException {
+        File file = getFile(uuid);
+        YamlConfiguration yaml = getConfig(uuid);
         yaml.set(path, value);
+        yaml.save(file);
     }
 
-    public String getString(String path) {
-        return yaml.getString(path);
+    public String getString(UUID uuid, String path) throws IOException {
+        return getConfig(uuid).getString(path);
     }
-    public List<String> getStringList(String path) {
-        return yaml.getStringList(path);
-    }
-
-    public int getInt(String path) {
-        return yaml.getInt(path);
+    public List<String> getStringList(UUID uuid, String path) throws IOException {
+        return getConfig(uuid).getStringList(path);
     }
 
-    public double getDouble(String path) {
-        return yaml.getDouble(path);
+    public int getInt(UUID uuid, String path) throws IOException {
+        return getConfig(uuid).getInt(path);
     }
 
-    public boolean getBoolean(String path) {
-        return yaml.getBoolean(path);
+    public double getDouble(UUID uuid, String path) throws IOException {
+        return getConfig(uuid).getDouble(path);
     }
 
-    public ItemStack[] getInventory(String path) throws IOException, InvalidConfigurationException {
-        List<?> list = yaml.getList(path);
+    public boolean getBoolean(UUID uuid, String path) throws IOException {
+        return getConfig(uuid).getBoolean(path);
+    }
+
+    public ItemStack[] getInventory(UUID uuid, String path) throws IOException, InvalidConfigurationException {
+        List<?> list = getConfig(uuid).getList(path);
 
         if (list == null) {
             return new ItemStack[41];
@@ -65,33 +84,41 @@ public class PlayerData {
         return list.toArray(new ItemStack[0]);
     }
 
-    public ItemStack getItem(String path) {
-        return yaml.getItemStack(path);
+    public ItemStack getItem(UUID uuid, String path) throws IOException{
+        return getConfig(uuid).getItemStack(path);
     }
 
-    public GameMode getGameMode(String path) {
-        String value = yaml.getString(path);
+    public GameMode getGameMode(UUID uuid, String path) throws IOException {
+        String value = getConfig(uuid).getString(path);
         return value == null ? null : GameMode.valueOf(value);
     }
 
-    public ConfigurationSection getSection(String path) {
-        return yaml.getConfigurationSection(path);
+    public ConfigurationSection getSection(UUID uuid, String path) throws IOException {
+        return getConfig(uuid).getConfigurationSection(path);
     }
 
-    public YamlConfiguration getConfig() {
-        return yaml;
+
+    public void unload(UUID uuid) {
+        configs.remove(uuid);
     }
 
-    public void save() throws IOException {
+
+    public void save(UUID uuid) throws IOException {
+        getConfig(uuid).save(getFile(uuid));
+    }
+
+    public void reload(UUID uuid) throws IOException, InvalidConfigurationException {
+        YamlConfiguration yaml = getConfig(uuid);
+        yaml.load(getFile(uuid));
+    }
+
+    public void remove(UUID uuid, String path) throws IOException {
+
+        File file = getFile(uuid);
+        YamlConfiguration yaml = getConfig(uuid);
+
+
+        yaml.set(path, null);
         yaml.save(file);
-        try {
-            reload();
-        } catch (InvalidConfigurationException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void reload() throws IOException, InvalidConfigurationException {
-        yaml.load(file);
     }
 }

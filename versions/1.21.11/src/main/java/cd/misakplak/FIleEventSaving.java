@@ -6,40 +6,57 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.*;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalTime;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class FIleEventSaving implements Listener {
     private final PlayerData data = managePlayers.getInstance().getPlayerData();
 
+    private final Map<UUID, PendingSession> pendingSessions = new HashMap<>();
     private final Map<UUID, String> currentSessions = managePlayers.getInstance().getCurrentSessions();
 
-
+    private final boolean logStuff = managePlayers.getInstance().getConfig().getBoolean("history.log-history");
 
 
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) throws IOException{
+    public void onPlayerJoin(PlayerJoinEvent event) throws IOException {
+
+        if (!logStuff) {
+            return;
+        }
 
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         String sessionId = String.valueOf(System.currentTimeMillis());
-        currentSessions.put(event.getPlayer().getUniqueId(), sessionId);
+
+        BukkitTask task = startSessionTimer(event.getPlayer(), sessionId);
+        pendingSessions.put(event.getPlayer().getUniqueId(), new PendingSession(sessionId, task));
 
 
-        data.set(event.getPlayer().getUniqueId() + ".logs." + sessionId + ".jointime", timestamp.toString());
-        data.save();
+        data.set(event.getPlayer().getUniqueId(), "logs." + sessionId + ".jointime", timestamp.toString());
+        data.save(event.getPlayer().getUniqueId());
     }
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent event) throws IOException, InvalidConfigurationException {
+        if (!logStuff) {
+            return;
+        }
         UUID uuid = event.getPlayer().getUniqueId();
         Player player = event.getPlayer();
+        PendingSession pending = pendingSessions.remove(uuid);
+
+        if (pending != null) {
+            pending.getTask().cancel();
+            return;
+        }
 
         saveSnapshot(uuid, player);
+        data.unload(uuid);
 
 
     }
@@ -47,46 +64,73 @@ public class FIleEventSaving implements Listener {
     @EventHandler
     public void onPlayerComand(PlayerCommandPreprocessEvent event) throws IOException {
 
+        if (!logStuff) {
+            return;
+        }
 
         UUID uuid = event.getPlayer().getUniqueId();
+        PendingSession pending = pendingSessions.remove(uuid);
+
+        if (pending != null) {
+            pending.getTask().cancel();
+            currentSessions.put(uuid, pending.getSessionId());
+        }
+
         String sessionId = currentSessions.get(uuid);
-        String path = uuid + ".logs." + sessionId + ".commands";
+
 
         if (sessionId == null) {
             return;
         }
 
-        List<String> logs = data.getStringList(path);
+        String path = "logs." + sessionId + ".commands";
+
+        List<String> logs = data.getStringList(uuid, path);
         logs.add("[" + LocalTime.now().withNano(0) + "] " + event.getMessage());
 
-                data.set(path, logs);
-                data.save();
+        data.set(uuid, path, logs);
+        data.save(uuid);
     }
 
     @EventHandler
     public void onPLayerSendMessage(AsyncPlayerChatEvent event) throws IOException {
 
+        if (!logStuff) {
+            return;
+        }
+
 
         UUID uuid = event.getPlayer().getUniqueId();
+        PendingSession pending = pendingSessions.remove(uuid);
+
+
+
+        if (pending != null) {
+            pending.getTask().cancel();
+            currentSessions.put(uuid, pending.getSessionId());
+        }
+
         String sessionId = currentSessions.get(uuid);
-        String path = uuid + ".logs." + sessionId + ".chat";
+
 
         if (sessionId == null) {
             return;
         }
 
-        List<String> logs = data.getStringList(path);
+        String path = "logs." + sessionId + ".chat";
+
+        List<String> logs = data.getStringList(uuid, path);
         logs.add("[" + LocalTime.now().withNano(0) + "] " + event.getMessage());
 
 
         Bukkit.getScheduler().runTask(managePlayers.getInstance(), () -> {
             try {
-                data.set(path, logs);
+                data.set(uuid, path, logs);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
             try {
-                data.save();
+                data.save(uuid);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -105,24 +149,43 @@ public class FIleEventSaving implements Listener {
             return;
         }
 
-        Bukkit.getLogger().info("Saving " + uuid);
-        Bukkit.getLogger().info("Session = " + id);
-        Bukkit.getLogger().info("Current sessions = " + currentSessions);
 
+        data.set(uuid, "logs." + id + ".inventory", player.getInventory().getContents());
+        data.set(uuid, "logs." + id + ".helmet", player.getInventory().getHelmet());
+        data.set(uuid, "logs." + id + ".chestplate", player.getInventory().getChestplate());
+        data.set(uuid, "logs." + id + ".leggings", player.getInventory().getLeggings());
+        data.set(uuid, "logs." + id + ".boots", player.getInventory().getBoots());
+        data.set(uuid, "logs." + id + ".offhand", player.getInventory().getItemInOffHand());
 
-        data.set(uuid + ".logs." + id + ".inventory", player.getInventory().getContents());
-        data.set(uuid + ".logs." + id + ".helmet", player.getInventory().getHelmet());
-        data.set(uuid + ".logs." + id + ".chestplate", player.getInventory().getChestplate());
-        data.set(uuid + ".logs." + id + ".leggings", player.getInventory().getLeggings());
-        data.set(uuid + ".logs." + id + ".boots", player.getInventory().getBoots());
-        data.set(uuid + ".logs." + id + ".offhand", player.getInventory().getItemInOffHand());
-
-        data.set(uuid + ".logs." + id + ".gamemode", player.getGameMode().name());
-        data.set(uuid + ".logs." + id + ".health", player.getHealth());
-        data.set(uuid + ".logs." + id + ".location", "X: "+player.getLocation().getBlockX()+", Y: "+player.getLocation().getBlockY()+", Z: "+player.getLocation().getBlockZ());
-        data.set(uuid + ".logs." + id + ".leavetime", timestamp.toString());
+        data.set(uuid, "logs." + id + ".gamemode", player.getGameMode().name());
+        data.set(uuid, "logs." + id + ".health", player.getHealth());
+        data.set(uuid, "logs." + id + ".location", "X: " + player.getLocation().getBlockX() + ", Y: " + player.getLocation().getBlockY() + ", Z: " + player.getLocation().getBlockZ());
+        data.set(uuid, "logs." + id + ".leavetime", timestamp.toString());
         currentSessions.remove(uuid);
-        data.save();
+        data.save(uuid);
     }
 
+    public BukkitTask startSessionTimer(Player player, String sessionId) {
+
+        int secconds = managePlayers.getInstance().getConfig().getInt("history.secconds-untill-session-start");
+
+        return new BukkitRunnable() {
+
+            @Override
+            public void run() {
+
+                if (player == null || !player.isOnline()) {
+                    return;
+                }
+
+                currentSessions.put(player.getUniqueId(), sessionId);
+                pendingSessions.remove(player.getUniqueId());
+                cancel();
+
+
+            }
+
+        }.runTaskLater(managePlayers.getInstance(), 20L * secconds);
+    }
 }
+

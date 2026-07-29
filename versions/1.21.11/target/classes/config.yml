@@ -1,1 +1,3 @@
-#HELLOOOOO (nothing yet)
+history:
+  log-history: true #default true
+  secconds-untill-session-start: 10 #secconds untill something actually logs (to avoid more data storage)
